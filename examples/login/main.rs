@@ -1,5 +1,6 @@
 mod packets;
 use minceraft::net;
+use minceraft::auth;
 use net::conn::Conn;
 use net::packet::Packet;
 use rand::Rng;
@@ -11,7 +12,7 @@ fn main() {
     let http = reqwest::blocking::Client::new();
 
     let dc =
-        ms_auth_mc::DeviceCode::new("389b1b32-b5d5-43b2-bddc-84ce938d6737", None, &http).unwrap();
+        auth::DeviceCode::new("389b1b32-b5d5-43b2-bddc-84ce938d6737", None, &http).unwrap();
 
     if let Some(inner) = &dc.inner {
         println!("{}", inner.message);
