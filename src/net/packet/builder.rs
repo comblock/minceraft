@@ -57,8 +57,12 @@ macro_rules! packets {
         )*
     ) => {
         $(
-            use minceraft::net::types::*;
-            use minceraft::net::packet::*;
+            #[allow(unused_imports)]
+            use $crate::net::types::*;
+            #[allow(unused_imports)]
+            use $crate::net::packet::*;
+            #[allow(unused_imports)]
+            use $crate::*;
 
             #[derive(Debug, Clone)]
             pub struct $packet {
@@ -145,7 +149,7 @@ macro_rules! def_enum {
             )*
         }
 
-        impl minceraft::net::types::Decoder for $ident {
+        impl $crate::net::types::Decoder for $ident {
             fn read_from(buffer: &mut impl std::io::Read) -> anyhow::Result<Self>
                 where
                     Self: Sized
@@ -184,7 +188,7 @@ macro_rules! def_enum {
             }
         }
 
-        impl minceraft::net::types::Encoder for $ident {
+        impl $crate::net::types::Encoder for $ident {
             fn write_to(&self, buffer: &mut impl std::io::Write) -> anyhow::Result<()> {
                 match self {
                     $(

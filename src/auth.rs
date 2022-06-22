@@ -18,8 +18,8 @@
 const CACHE_FILE_NAME: &str = "auth.cache";
 
 use {
-    std::{fs, io::Read, io::Write, path::Path, string::String},
     base64::{read::DecoderReader, write::EncoderWriter},
+    std::{fs, io::Read, io::Write, path::Path, string::String},
 };
 
 use {
@@ -30,14 +30,12 @@ use {
     serde_json::json,
 };
 
-
 fn write_string_to(w: &mut impl Write, s: &String) -> anyhow::Result<()> {
     let len = s.len();
     w.write_u16::<LE>(len as u16)?;
     w.write_all(s.as_bytes())?;
     Ok(())
 }
-
 
 fn read_string_from(r: &mut impl Read) -> anyhow::Result<String> {
     let len = r.read_u16::<LE>()?;
@@ -66,7 +64,6 @@ struct McAuth {
     //#[serde(skip)]
     //pub expires_after: i64,
 }
-
 
 impl McAuth {
     fn mc_profile(&self, client: &Client) -> anyhow::Result<McProfile> {
@@ -97,7 +94,6 @@ struct XstsAuth {
     display_claims: DisplayClaims,
 }
 
-
 impl XstsAuth {
     fn auth_mc(&self, client: &Client) -> anyhow::Result<McAuth> {
         let json = json!({
@@ -122,7 +118,6 @@ impl XstsAuth {
 struct XblAuth {
     token: String,
 }
-
 
 impl XblAuth {
     fn auth_xsts(&self, client: &Client) -> anyhow::Result<XstsAuth> {
@@ -163,7 +158,6 @@ struct MsAuth {
     #[serde(skip)]
     expires_after: i64,
 }
-
 
 impl MsAuth {
     /// Checks if the access token is still valid and refreshes it if it isn't.
@@ -263,7 +257,6 @@ pub struct DeviceCodeInner {
     interval: u64,
     pub message: String,
 }
-
 
 impl DeviceCode {
     /// Entry point of the auth flow.

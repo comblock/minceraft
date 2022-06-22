@@ -1,0 +1,532 @@
+// This file was generated and is not intended for manual editing
+use crate::inv::enchant::EnchantCost;
+
+#[derive(Debug, Copy, Clone)]
+pub enum EnchantCategory {
+    Armor,
+    ArmorFeet,
+    ArmorHead,
+    ArmorChest,
+    Weapon,
+    Digger,
+    Breakable,
+    Bow,
+    FishingRod,
+}
+
+impl crate::inv::enchant::EnchantCategory for EnchantCategory {
+    fn name(&self) -> &'static str {
+        match self {
+            Self::Armor => "armor",
+            Self::ArmorFeet => "armor_feet",
+            Self::ArmorHead => "armor_head",
+            Self::ArmorChest => "armor_chest",
+            Self::Weapon => "weapon",
+            Self::Digger => "digger",
+            Self::Breakable => "breakable",
+            Self::Bow => "bow",
+            Self::FishingRod => "fishing_rod",
+        }
+    }
+
+    fn from_name(name: &str) -> anyhow::Result<Self> {
+        match name {
+            "armor" => Ok(Self::Armor),
+            "armor_feet" => Ok(Self::ArmorFeet),
+            "armor_head" => Ok(Self::ArmorHead),
+            "armor_chest" => Ok(Self::ArmorChest),
+            "weapon" => Ok(Self::Weapon),
+            "digger" => Ok(Self::Digger),
+            "breakable" => Ok(Self::Breakable),
+            "bow" => Ok(Self::Bow),
+            "fishing_rod" => Ok(Self::FishingRod),
+            _ => Err(anyhow::anyhow!("invalid enchant category name"))
+        }
+    }
+}
+
+#[derive(Debug, Copy, Clone)]
+pub enum Enchant {
+    Protection,
+    FireProtection,
+    FeatherFalling,
+    BlastProtection,
+    ProjectileProtection,
+    Respiration,
+    AquaAffinity,
+    Thorns,
+    DepthStrider,
+    Sharpness,
+    Smite,
+    BaneOfArthropods,
+    Knockback,
+    FireAspect,
+    Looting,
+    Efficiency,
+    SilkTouch,
+    Unbreaking,
+    Fortune,
+    Power,
+    Punch,
+    Flame,
+    Infinity,
+    LuckOfTheSea,
+    Lure,
+}
+
+impl crate::inv::enchant::Enchant for Enchant {
+    type EnchantCategory = EnchantCategory;
+
+    fn id(&self) -> u16 {
+        match self {
+            Self::Protection => 0,
+            Self::FireProtection => 1,
+            Self::FeatherFalling => 2,
+            Self::BlastProtection => 3,
+            Self::ProjectileProtection => 4,
+            Self::Respiration => 5,
+            Self::AquaAffinity => 6,
+            Self::Thorns => 7,
+            Self::DepthStrider => 8,
+            Self::Sharpness => 16,
+            Self::Smite => 17,
+            Self::BaneOfArthropods => 18,
+            Self::Knockback => 19,
+            Self::FireAspect => 20,
+            Self::Looting => 21,
+            Self::Efficiency => 32,
+            Self::SilkTouch => 33,
+            Self::Unbreaking => 34,
+            Self::Fortune => 35,
+            Self::Power => 48,
+            Self::Punch => 49,
+            Self::Flame => 50,
+            Self::Infinity => 51,
+            Self::LuckOfTheSea => 61,
+            Self::Lure => 62,
+        }
+    }
+
+    fn from_id(id: u16) -> anyhow::Result<Self> {
+        match id {
+            0 => Ok(Self::Protection),
+            1 => Ok(Self::FireProtection),
+            2 => Ok(Self::FeatherFalling),
+            3 => Ok(Self::BlastProtection),
+            4 => Ok(Self::ProjectileProtection),
+            5 => Ok(Self::Respiration),
+            6 => Ok(Self::AquaAffinity),
+            7 => Ok(Self::Thorns),
+            8 => Ok(Self::DepthStrider),
+            16 => Ok(Self::Sharpness),
+            17 => Ok(Self::Smite),
+            18 => Ok(Self::BaneOfArthropods),
+            19 => Ok(Self::Knockback),
+            20 => Ok(Self::FireAspect),
+            21 => Ok(Self::Looting),
+            32 => Ok(Self::Efficiency),
+            33 => Ok(Self::SilkTouch),
+            34 => Ok(Self::Unbreaking),
+            35 => Ok(Self::Fortune),
+            48 => Ok(Self::Power),
+            49 => Ok(Self::Punch),
+            50 => Ok(Self::Flame),
+            51 => Ok(Self::Infinity),
+            61 => Ok(Self::LuckOfTheSea),
+            62 => Ok(Self::Lure),
+            _ => Err(anyhow::anyhow!("invalid enchant id"))
+        }
+    }
+
+    fn name(&self) -> &'static str {
+        match self {
+            Self::Protection => "protection",
+            Self::FireProtection => "fire_protection",
+            Self::FeatherFalling => "feather_falling",
+            Self::BlastProtection => "blast_protection",
+            Self::ProjectileProtection => "projectile_protection",
+            Self::Respiration => "respiration",
+            Self::AquaAffinity => "aqua_affinity",
+            Self::Thorns => "thorns",
+            Self::DepthStrider => "depth_strider",
+            Self::Sharpness => "sharpness",
+            Self::Smite => "smite",
+            Self::BaneOfArthropods => "bane_of_arthropods",
+            Self::Knockback => "knockback",
+            Self::FireAspect => "fire_aspect",
+            Self::Looting => "looting",
+            Self::Efficiency => "efficiency",
+            Self::SilkTouch => "silk_touch",
+            Self::Unbreaking => "unbreaking",
+            Self::Fortune => "fortune",
+            Self::Power => "power",
+            Self::Punch => "punch",
+            Self::Flame => "flame",
+            Self::Infinity => "infinity",
+            Self::LuckOfTheSea => "luck_of_the_sea",
+            Self::Lure => "lure",
+        }
+    }
+
+    fn from_name(name: &str) -> anyhow::Result<Self> {
+        match name {
+            "protection" => Ok(Self::Protection),
+            "fire_protection" => Ok(Self::FireProtection),
+            "feather_falling" => Ok(Self::FeatherFalling),
+            "blast_protection" => Ok(Self::BlastProtection),
+            "projectile_protection" => Ok(Self::ProjectileProtection),
+            "respiration" => Ok(Self::Respiration),
+            "aqua_affinity" => Ok(Self::AquaAffinity),
+            "thorns" => Ok(Self::Thorns),
+            "depth_strider" => Ok(Self::DepthStrider),
+            "sharpness" => Ok(Self::Sharpness),
+            "smite" => Ok(Self::Smite),
+            "bane_of_arthropods" => Ok(Self::BaneOfArthropods),
+            "knockback" => Ok(Self::Knockback),
+            "fire_aspect" => Ok(Self::FireAspect),
+            "looting" => Ok(Self::Looting),
+            "efficiency" => Ok(Self::Efficiency),
+            "silk_touch" => Ok(Self::SilkTouch),
+            "unbreaking" => Ok(Self::Unbreaking),
+            "fortune" => Ok(Self::Fortune),
+            "power" => Ok(Self::Power),
+            "punch" => Ok(Self::Punch),
+            "flame" => Ok(Self::Flame),
+            "infinity" => Ok(Self::Infinity),
+            "luck_of_the_sea" => Ok(Self::LuckOfTheSea),
+            "lure" => Ok(Self::Lure),
+            _ => Err(anyhow::anyhow!("invalid enchant name"))
+        }
+    }
+
+    fn display_name(&self) -> &'static str {
+        match self {
+            Self::Protection => "Protection",
+            Self::FireProtection => "Fire Protection",
+            Self::FeatherFalling => "Feather Falling",
+            Self::BlastProtection => "Blast Protection",
+            Self::ProjectileProtection => "Projectile Protection",
+            Self::Respiration => "Respiration",
+            Self::AquaAffinity => "Aqua Affinity",
+            Self::Thorns => "Thorns",
+            Self::DepthStrider => "Depth Strider",
+            Self::Sharpness => "Sharpness",
+            Self::Smite => "Smite",
+            Self::BaneOfArthropods => "Bane of Arthropods",
+            Self::Knockback => "Knockback",
+            Self::FireAspect => "Fire Aspect",
+            Self::Looting => "Looting",
+            Self::Efficiency => "Efficiency",
+            Self::SilkTouch => "Silk Touch",
+            Self::Unbreaking => "Unbreaking",
+            Self::Fortune => "Fortune",
+            Self::Power => "Power",
+            Self::Punch => "Punch",
+            Self::Flame => "Flame",
+            Self::Infinity => "Infinity",
+            Self::LuckOfTheSea => "Luck of the Sea",
+            Self::Lure => "Lure",
+        }
+    }
+
+    fn max_lvl(&self) -> u16 {
+        match self {
+            Self::Protection => 4,
+            Self::FireProtection => 4,
+            Self::FeatherFalling => 4,
+            Self::BlastProtection => 4,
+            Self::ProjectileProtection => 4,
+            Self::Respiration => 3,
+            Self::AquaAffinity => 1,
+            Self::Thorns => 3,
+            Self::DepthStrider => 3,
+            Self::Sharpness => 5,
+            Self::Smite => 5,
+            Self::BaneOfArthropods => 5,
+            Self::Knockback => 2,
+            Self::FireAspect => 2,
+            Self::Looting => 3,
+            Self::Efficiency => 5,
+            Self::SilkTouch => 1,
+            Self::Unbreaking => 3,
+            Self::Fortune => 3,
+            Self::Power => 5,
+            Self::Punch => 2,
+            Self::Flame => 1,
+            Self::Infinity => 1,
+            Self::LuckOfTheSea => 3,
+            Self::Lure => 3,
+        }
+    }
+
+    fn min_cost(&self) -> EnchantCost {
+        match self {
+            Self::Protection => EnchantCost { a: 11, b: -10 },
+            Self::FireProtection => EnchantCost { a: 8, b: 2 },
+            Self::FeatherFalling => EnchantCost { a: 6, b: -1 },
+            Self::BlastProtection => EnchantCost { a: 8, b: -3 },
+            Self::ProjectileProtection => EnchantCost { a: 6, b: -3 },
+            Self::Respiration => EnchantCost { a: 10, b: 0 },
+            Self::AquaAffinity => EnchantCost { a: 0, b: 1 },
+            Self::Thorns => EnchantCost { a: 20, b: -10 },
+            Self::DepthStrider => EnchantCost { a: 10, b: 0 },
+            Self::Sharpness => EnchantCost { a: 11, b: -10 },
+            Self::Smite => EnchantCost { a: 8, b: -3 },
+            Self::BaneOfArthropods => EnchantCost { a: 8, b: -3 },
+            Self::Knockback => EnchantCost { a: 20, b: -15 },
+            Self::FireAspect => EnchantCost { a: 20, b: -10 },
+            Self::Looting => EnchantCost { a: 9, b: 6 },
+            Self::Efficiency => EnchantCost { a: 10, b: -9 },
+            Self::SilkTouch => EnchantCost { a: 0, b: 15 },
+            Self::Unbreaking => EnchantCost { a: 8, b: -3 },
+            Self::Fortune => EnchantCost { a: 9, b: 6 },
+            Self::Power => EnchantCost { a: 10, b: -9 },
+            Self::Punch => EnchantCost { a: 20, b: -8 },
+            Self::Flame => EnchantCost { a: 0, b: 20 },
+            Self::Infinity => EnchantCost { a: 0, b: 20 },
+            Self::LuckOfTheSea => EnchantCost { a: 9, b: 6 },
+            Self::Lure => EnchantCost { a: 9, b: 6 },
+        }
+    }
+
+    fn max_cost(&self) -> EnchantCost {
+        match self {
+            Self::Protection => EnchantCost { a: 11, b: 1 },
+            Self::FireProtection => EnchantCost { a: 8, b: 10 },
+            Self::FeatherFalling => EnchantCost { a: 6, b: 5 },
+            Self::BlastProtection => EnchantCost { a: 8, b: 5 },
+            Self::ProjectileProtection => EnchantCost { a: 6, b: 3 },
+            Self::Respiration => EnchantCost { a: 10, b: 30 },
+            Self::AquaAffinity => EnchantCost { a: 0, b: 41 },
+            Self::Thorns => EnchantCost { a: 10, b: 51 },
+            Self::DepthStrider => EnchantCost { a: 10, b: 15 },
+            Self::Sharpness => EnchantCost { a: 11, b: 10 },
+            Self::Smite => EnchantCost { a: 8, b: 17 },
+            Self::BaneOfArthropods => EnchantCost { a: 8, b: 17 },
+            Self::Knockback => EnchantCost { a: 10, b: 51 },
+            Self::FireAspect => EnchantCost { a: 10, b: 51 },
+            Self::Looting => EnchantCost { a: 10, b: 51 },
+            Self::Efficiency => EnchantCost { a: 10, b: 51 },
+            Self::SilkTouch => EnchantCost { a: 10, b: 51 },
+            Self::Unbreaking => EnchantCost { a: 10, b: 51 },
+            Self::Fortune => EnchantCost { a: 10, b: 51 },
+            Self::Power => EnchantCost { a: 10, b: 6 },
+            Self::Punch => EnchantCost { a: 20, b: 17 },
+            Self::Flame => EnchantCost { a: 0, b: 50 },
+            Self::Infinity => EnchantCost { a: 0, b: 50 },
+            Self::LuckOfTheSea => EnchantCost { a: 10, b: 51 },
+            Self::Lure => EnchantCost { a: 10, b: 51 },
+        }
+    }
+
+    fn exclude(&self) -> &[Self] {
+        match self {
+            Self::Protection => &[Self::BlastProtection,Self::FireProtection,Self::ProjectileProtection,],
+            Self::FireProtection => &[Self::BlastProtection,Self::Protection,Self::ProjectileProtection,],
+            Self::FeatherFalling => &[],
+            Self::BlastProtection => &[Self::FireProtection,Self::Protection,Self::ProjectileProtection,],
+            Self::ProjectileProtection => &[Self::Protection,Self::BlastProtection,Self::FireProtection,],
+            Self::Respiration => &[],
+            Self::AquaAffinity => &[],
+            Self::Thorns => &[],
+            Self::DepthStrider => &[],
+            Self::Sharpness => &[Self::Smite,Self::BaneOfArthropods,],
+            Self::Smite => &[Self::Sharpness,Self::BaneOfArthropods,],
+            Self::BaneOfArthropods => &[Self::Smite,Self::Sharpness,],
+            Self::Knockback => &[],
+            Self::FireAspect => &[],
+            Self::Looting => &[],
+            Self::Efficiency => &[],
+            Self::SilkTouch => &[Self::Fortune,],
+            Self::Unbreaking => &[],
+            Self::Fortune => &[Self::SilkTouch,],
+            Self::Power => &[],
+            Self::Punch => &[],
+            Self::Flame => &[],
+            Self::Infinity => &[],
+            Self::LuckOfTheSea => &[],
+            Self::Lure => &[],
+        }
+    }
+
+    fn category(&self) -> Self::EnchantCategory {
+        match self {
+            Self::Protection => EnchantCategory::Armor,
+            Self::FireProtection => EnchantCategory::Armor,
+            Self::FeatherFalling => EnchantCategory::ArmorFeet,
+            Self::BlastProtection => EnchantCategory::Armor,
+            Self::ProjectileProtection => EnchantCategory::Armor,
+            Self::Respiration => EnchantCategory::ArmorHead,
+            Self::AquaAffinity => EnchantCategory::ArmorHead,
+            Self::Thorns => EnchantCategory::ArmorChest,
+            Self::DepthStrider => EnchantCategory::ArmorFeet,
+            Self::Sharpness => EnchantCategory::Weapon,
+            Self::Smite => EnchantCategory::Weapon,
+            Self::BaneOfArthropods => EnchantCategory::Weapon,
+            Self::Knockback => EnchantCategory::Weapon,
+            Self::FireAspect => EnchantCategory::Weapon,
+            Self::Looting => EnchantCategory::Weapon,
+            Self::Efficiency => EnchantCategory::Digger,
+            Self::SilkTouch => EnchantCategory::Digger,
+            Self::Unbreaking => EnchantCategory::Breakable,
+            Self::Fortune => EnchantCategory::Digger,
+            Self::Power => EnchantCategory::Bow,
+            Self::Punch => EnchantCategory::Bow,
+            Self::Flame => EnchantCategory::Bow,
+            Self::Infinity => EnchantCategory::Bow,
+            Self::LuckOfTheSea => EnchantCategory::FishingRod,
+            Self::Lure => EnchantCategory::FishingRod,
+        }
+    }
+
+    fn weight(&self) -> u16 {
+        match self {
+            Self::Protection => 10,
+            Self::FireProtection => 5,
+            Self::FeatherFalling => 5,
+            Self::BlastProtection => 2,
+            Self::ProjectileProtection => 5,
+            Self::Respiration => 2,
+            Self::AquaAffinity => 2,
+            Self::Thorns => 1,
+            Self::DepthStrider => 2,
+            Self::Sharpness => 10,
+            Self::Smite => 5,
+            Self::BaneOfArthropods => 5,
+            Self::Knockback => 5,
+            Self::FireAspect => 2,
+            Self::Looting => 2,
+            Self::Efficiency => 10,
+            Self::SilkTouch => 1,
+            Self::Unbreaking => 5,
+            Self::Fortune => 2,
+            Self::Power => 10,
+            Self::Punch => 2,
+            Self::Flame => 2,
+            Self::Infinity => 1,
+            Self::LuckOfTheSea => 2,
+            Self::Lure => 2,
+        }
+    }
+
+    fn treasure_only(&self) -> bool {
+        match self {
+            Self::Protection => false,
+            Self::FireProtection => false,
+            Self::FeatherFalling => false,
+            Self::BlastProtection => false,
+            Self::ProjectileProtection => false,
+            Self::Respiration => false,
+            Self::AquaAffinity => false,
+            Self::Thorns => false,
+            Self::DepthStrider => false,
+            Self::Sharpness => false,
+            Self::Smite => false,
+            Self::BaneOfArthropods => false,
+            Self::Knockback => false,
+            Self::FireAspect => false,
+            Self::Looting => false,
+            Self::Efficiency => false,
+            Self::SilkTouch => false,
+            Self::Unbreaking => false,
+            Self::Fortune => false,
+            Self::Power => false,
+            Self::Punch => false,
+            Self::Flame => false,
+            Self::Infinity => false,
+            Self::LuckOfTheSea => false,
+            Self::Lure => false,
+        }
+    }
+
+    fn curse(&self) -> bool {
+        match self {
+            Self::Protection => false,
+            Self::FireProtection => false,
+            Self::FeatherFalling => false,
+            Self::BlastProtection => false,
+            Self::ProjectileProtection => false,
+            Self::Respiration => false,
+            Self::AquaAffinity => false,
+            Self::Thorns => false,
+            Self::DepthStrider => false,
+            Self::Sharpness => false,
+            Self::Smite => false,
+            Self::BaneOfArthropods => false,
+            Self::Knockback => false,
+            Self::FireAspect => false,
+            Self::Looting => false,
+            Self::Efficiency => false,
+            Self::SilkTouch => false,
+            Self::Unbreaking => false,
+            Self::Fortune => false,
+            Self::Power => false,
+            Self::Punch => false,
+            Self::Flame => false,
+            Self::Infinity => false,
+            Self::LuckOfTheSea => false,
+            Self::Lure => false,
+        }
+    }
+
+    fn tradeable(&self) -> bool {
+        match self {
+            Self::Protection => true,
+            Self::FireProtection => true,
+            Self::FeatherFalling => true,
+            Self::BlastProtection => true,
+            Self::ProjectileProtection => true,
+            Self::Respiration => true,
+            Self::AquaAffinity => true,
+            Self::Thorns => true,
+            Self::DepthStrider => true,
+            Self::Sharpness => true,
+            Self::Smite => true,
+            Self::BaneOfArthropods => true,
+            Self::Knockback => true,
+            Self::FireAspect => true,
+            Self::Looting => true,
+            Self::Efficiency => true,
+            Self::SilkTouch => true,
+            Self::Unbreaking => true,
+            Self::Fortune => true,
+            Self::Power => true,
+            Self::Punch => true,
+            Self::Flame => true,
+            Self::Infinity => true,
+            Self::LuckOfTheSea => true,
+            Self::Lure => true,
+        }
+    }
+
+    fn discoverable(&self) -> bool {
+        match self {
+            Self::Protection => true,
+            Self::FireProtection => true,
+            Self::FeatherFalling => true,
+            Self::BlastProtection => true,
+            Self::ProjectileProtection => true,
+            Self::Respiration => true,
+            Self::AquaAffinity => true,
+            Self::Thorns => true,
+            Self::DepthStrider => true,
+            Self::Sharpness => true,
+            Self::Smite => true,
+            Self::BaneOfArthropods => true,
+            Self::Knockback => true,
+            Self::FireAspect => true,
+            Self::Looting => true,
+            Self::Efficiency => true,
+            Self::SilkTouch => true,
+            Self::Unbreaking => true,
+            Self::Fortune => true,
+            Self::Power => true,
+            Self::Punch => true,
+            Self::Flame => true,
+            Self::Infinity => true,
+            Self::LuckOfTheSea => true,
+            Self::Lure => true,
+        }
+    }
+}
+

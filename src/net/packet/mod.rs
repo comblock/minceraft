@@ -28,7 +28,6 @@ pub trait Packet: Encoder + Decoder {
     }
 }
 
-
 #[derive(Debug)]
 pub struct RawPacket {
     pub id: VarInt,

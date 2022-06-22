@@ -1,6 +1,6 @@
 mod packets;
-use minceraft::net;
 use minceraft::auth;
+use minceraft::net;
 use net::conn::Conn;
 use net::packet::Packet;
 use rand::Rng;
@@ -11,8 +11,7 @@ use std::{net::ToSocketAddrs, time::Duration};
 fn main() {
     let http = reqwest::blocking::Client::new();
 
-    let dc =
-        auth::DeviceCode::new("389b1b32-b5d5-43b2-bddc-84ce938d6737", None, &http).unwrap();
+    let dc = auth::DeviceCode::new("389b1b32-b5d5-43b2-bddc-84ce938d6737", None, &http).unwrap();
 
     if let Some(inner) = &dc.inner {
         println!("{}", inner.message);
@@ -25,7 +24,7 @@ fn main() {
         .unwrap()
         .next()
         .unwrap();
-    
+
     let mut conn = Conn::connect_timeout(&addr, Duration::new(30, 0)).unwrap();
 
     let packet = packets::Handshake {

@@ -1,4 +1,9 @@
 pub mod raw;
+pub use crate::inv::{
+    enchant::Enchant,
+    item::{Item, Itemstack},
+    Slot,
+};
 use anyhow::{bail, Result};
 pub use nbt::Blob as Nbt;
 use std::{
@@ -25,8 +30,6 @@ where
 pub trait Decoder: Sized {
     fn read_from(r: &mut impl io::Read) -> Result<Self>;
 }
-
-
 
 impl Encoder for u8 {
     fn write_to(&self, w: &mut impl io::Write) -> Result<()> {
@@ -316,6 +319,49 @@ impl Encoder for Angle {
 impl Decoder for Angle {
     fn read_from(r: &mut impl io::Read) -> Result<Self> {
         Ok(Self(raw::read_unsigned_byte(r)?))
+    }
+}
+
+impl<T: Item, U: Enchant> Encoder for Slot<T, U> {
+    fn write_to(&self, w: &mut impl io::Write) -> Result<()> {
+        match self {
+            Self::Empty => false.write_to(w),
+            Self::Filled(i) => {
+                true.write_to(w)?;
+                VarInt(i.item.id().into()).write_to(w)?;
+
+                let count: i8 = i.count.into();
+                count.write_to(w)?;
+
+                // TODO: Handle NBT properly
+                0_u8.write_to(w)?;
+
+                Ok(())
+            }
+        }
+    }
+}
+
+impl<T: Item, U: Enchant> Decoder for Slot<T, U> {
+    fn read_from(r: &mut impl io::Read) -> Result<Self> {
+        let present: bool = bool::read_from(r)?;
+        Ok(match present {
+            false => Self::Empty,
+            true => {
+                Self::Filled(Itemstack {
+                    item: {
+                        let id = VarInt::read_from(r)?.0 as u16;
+                        T::from_id(id)?
+                    },
+                    count: i8::read_from(r)?,
+                    meta: {
+                        nbt::from_reader(r)?;
+                        // TODO: Handle NBT properly
+                        None
+                    },
+                })
+            }
+        })
     }
 }
 
