@@ -14,3 +14,4 @@ proc-macro = true
 syn = { version = "1.0", features = ["full", "extra-traits"] }
 quote = "1.0"
 anyhow = "1.0"
+minceraft = { path = "../minceraft", features = ["net"] }
