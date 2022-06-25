@@ -2,12 +2,25 @@
 extern crate proc_macro;
 use proc_macro::{TokenStream};
 use quote::{quote, quote_spanned};
-use syn::{parse_macro_input, spanned::Spanned, ItemStruct, LitInt};
+use syn::{parse_macro_input, spanned::Spanned, LitInt, AttrStyle};
 
-#[proc_macro_derive(Packet)]
+#[proc_macro_derive(Packet, attributes(id))]
 pub fn derive_packet(input: TokenStream) -> TokenStream {
 	let ast: syn::DeriveInput = parse_macro_input!(input);
 	let name = ast.ident;
+
+	let attrs = ast.attrs;
+
+	let mut id = Option::<LitInt>::None;
+
+	for i in attrs {
+		if let AttrStyle::Outer = i.style {
+			id = Some(i.parse_args().unwrap());
+		}
+	}
+	
+	let id = id.unwrap();
+	
 
 	let fields = if let syn::Data::Struct(syn::DataStruct {
         fields: syn::Fields::Named(ref fields),
@@ -71,18 +84,8 @@ pub fn derive_packet(input: TokenStream) -> TokenStream {
 
 		use minceraft::net::types::VarInt;
 		impl Packet for #name {
-			const ID: VarInt = VarInt(/*get the id from the atttribute*/)
+			const ID: VarInt = VarInt(#id);
 		}
 	};
 	TokenStream::from(extended)
-}
-
-#[proc_macro_attribute]
-pub fn id(metadata: TokenStream, input: TokenStream) -> TokenStream {
-	let _: ItemStruct = parse_macro_input!(input);
-	let _id = parse_macro_input!(metadata as LitInt);
-
-	quote! {
-		// ???
-	}.into()
 }
