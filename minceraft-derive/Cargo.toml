@@ -1,6 +1,6 @@
 [package]
 name = "minceraft-derive"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 description = "derive macros for minceraft"
 license = "MIT OR Apache-2.0"
@@ -11,7 +11,7 @@ license = "MIT OR Apache-2.0"
 proc-macro = true
 
 [dependencies]
-syn = { version = "1.0", features = ["full", "extra-traits"] }
+syn = { version = "1.0", features = ["full"] }
 quote = "1.0"
 anyhow = "1.0"
-minceraft = { path = "../minceraft", features = ["net"] }
+minceraft = { version = "*", features = ["net"] }
