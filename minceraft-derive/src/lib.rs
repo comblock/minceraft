@@ -1,6 +1,6 @@
 // very much WIP
 extern crate proc_macro;
-use proc_macro::{TokenStream};
+use proc_macro::TokenStream;
 use quote::{quote, quote_spanned};
 use syn::{parse_macro_input, spanned::Spanned, LitInt, AttrStyle};
 
@@ -64,16 +64,17 @@ pub fn derive_packet(input: TokenStream) -> TokenStream {
 	};
 
 	let extended = quote! {
-		use minceraft::net::types::{Encoder, Decoder};
-		impl Encoder for #name {
+		impl minceraft::net::types::Encoder for #name {
 			fn write_to(&self, w: &mut impl std::io::Write) -> anyhow::Result<()> {
+				use minceraft::net::types::Encoder;
 				#stream_encoder
 				Ok(())
 			}
 		}
 		
-		impl Decoder for #name {
+		impl minceraft::net::types::Decoder for #name {
 			fn read_from(r: &mut impl std::io::Read) -> anyhow::Result<Self> {
+				use minceraft::net::types::Decoder;
 				#stream_decoder_types
 
 				Ok(Self {
@@ -82,9 +83,8 @@ pub fn derive_packet(input: TokenStream) -> TokenStream {
 			}
 		}
 
-		use minceraft::net::types::VarInt;
-		impl Packet for #name {
-			const ID: VarInt = VarInt(#id);
+		impl minceraft::net::packet::Packet for #name {
+			const ID: minceraft::net::types::VarInt = minceraft::net::types::VarInt(#id);
 		}
 	};
 	TokenStream::from(extended)
