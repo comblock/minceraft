@@ -13,25 +13,24 @@ auth = ["dep:byteorder", "dep:chrono", "dep:reqwest", "dep:serde_json", "dep:ser
 inv = []
 p47 = ["net"]
 gen = ["dep:serde_json", "dep:case", "dep:reqwest"]
+derive = ["dep:minceraft-derive"]
 
 [dependencies]
 anyhow = "1.0"
 
 aes = { version = "0.7", optional = true }
 byteorder = { version = "1.4", optional = true }
-tokio-byteorder = { version = "0.3", optional = true }
 cfb8 = { version = "0.7", optional = true }
 flate2 = { version = "1.0", optional = true }
 hematite-nbt = { version = "0.5", optional = true }
 uuid = { version = "1.0", optional = true }
-
+minceraft-derive = { path = "../minceraft-derive", optional = true }
 chrono = { version = "0.4", optional = true}
 reqwest = { version = "0.11", features = ["blocking", "json"], optional = true }
 serde_json = { version = "1.0", optional = true }
 serde = { version = "1.0", features = ["derive"], optional = true }
 serde_derive = { version = "1.0", optional = true }
 base64 = { version = "0.13", optional = true }
-tokio = { version = "1.9", optional = true }
 case = { version = "1.0", optional = true }
 
 [dev-dependencies]
@@ -44,11 +43,11 @@ rand = "0.8"
 
 [[example]]
 name = "login"
-required-features = ["net", "auth"]
+required-features = ["net", "auth", "derive"]
 
 [[example]]
 name = "status"
-required-features = ["net", "auth"]
+required-features = ["net", "derive"]
 
 [[bin]]
 name = "gen-inv"

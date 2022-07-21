@@ -4,3 +4,4 @@ auth.cache
 server.bat
 /server
 /generated
+/.vscode

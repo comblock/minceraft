@@ -13,25 +13,6 @@ use std::{
     net::{TcpListener, ToSocketAddrs},
 };
 
-#[derive(Clone, Copy)]
-pub enum ProtocolState {
-    Handshake,
-    Status,
-    Login,
-    Play,
-}
-
-impl ProtocolState {
-    pub fn to_i32(&self) -> i32 {
-        match self {
-            ProtocolState::Handshake => 0,
-            ProtocolState::Status => 1,
-            ProtocolState::Login => 2,
-            ProtocolState::Play => 3,
-        }
-    }
-}
-
 pub struct Listener(pub TcpListener);
 
 impl Listener {
@@ -47,11 +28,9 @@ impl Listener {
 pub struct Conn {
     pub peer: SocketAddr,
     pub stream: TcpStream,
-    /// State is set to Handshake on connect but is not handled by Conn.
-    pub state: ProtocolState,
     cipher: Option<Cipher>,
-    pub writer: io::BufWriter<TcpStream>,
-    pub reader: io::BufReader<TcpStream>,
+    writer: io::BufWriter<TcpStream>,
+    reader: io::BufReader<TcpStream>,
     pub threshhold: i32,
 }
 
@@ -100,7 +79,6 @@ impl TryFrom<TcpStream> for Conn {
         Ok(Self {
             peer: stream.peer_addr()?,
             stream,
-            state: ProtocolState::Handshake,
             cipher: None,
             writer,
             reader,
@@ -110,14 +88,13 @@ impl TryFrom<TcpStream> for Conn {
 }
 
 impl Conn {
-    pub fn connect(addr: SocketAddr) -> anyhow::Result<Self> {
+    pub fn connect<A: ToSocketAddrs>(addr: A) -> anyhow::Result<Self> {
         let stream = TcpStream::connect(addr)?;
         let writer = io::BufWriter::new(stream.try_clone()?);
         let reader = io::BufReader::new(stream.try_clone()?);
         Ok(Self {
-            peer: addr,
+            peer: stream.peer_addr()?,
             stream,
-            state: ProtocolState::Handshake,
             cipher: None,
             writer,
             reader,
@@ -132,7 +109,6 @@ impl Conn {
         Ok(Self {
             peer: *addr,
             stream,
-            state: ProtocolState::Handshake,
             cipher: None,
             writer,
             reader,

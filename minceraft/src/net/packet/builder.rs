@@ -25,18 +25,6 @@ macro_rules! user_type {
 
 #[macro_export]
 macro_rules! user_type_convert_to_writeable {
-    (VarInt, $e:expr) => {
-        VarInt(*$e as i32)
-    };
-    (VarIntPrefixedVec <$inner:ident>, $e:expr) => {
-        VarIntPrefixedVec::from($e.as_slice())
-    };
-    (ShortPrefixedVec <$inner:ident>, $e:expr) => {
-        ShortPrefixedVec::from($e.as_slice())
-    };
-    (LengthInferredVecU8, $e:expr) => {
-        LengthInferredVecU8::from($e.as_slice())
-    };
     (Angle, $e:expr) => {
         Angle(*$e)
     };

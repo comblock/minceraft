@@ -1,6 +1,7 @@
 mod packets;
 use minceraft::net::conn::Conn;
 use minceraft::net::packet::Packet;
+use minceraft::net::types::VarInt;
 use std::{net::ToSocketAddrs, time::Duration};
 
 fn main() {
@@ -8,7 +9,7 @@ fn main() {
     let mut conn = Conn::connect_timeout(&addr, Duration::new(30, 0)).unwrap();
 
     let packet = packets::Handshake {
-        protocol_version: 47,
+        protocol_version: VarInt(47),
         server_address: String::from("localhost"),
         server_port: 25565,
         next_state: packets::HandshakeState::Status,

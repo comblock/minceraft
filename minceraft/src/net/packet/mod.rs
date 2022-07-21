@@ -5,7 +5,6 @@ use std::{
 };
 mod builder;
 use super::types::*;
-
 use flate2::{
     bufread::{ZlibDecoder, ZlibEncoder},
     Compression,
@@ -143,27 +142,6 @@ impl RawPacket {
             w.write_all(&buf2)?;
         }
 
-        //if self.data.len() < threshold as usize {
-        //    let buf = &mut Vec::new();
-        //    VarInt(0).write_to(buf)?;
-        //    self.id.write_to(buf)?;
-        //    buf.write_all(&self.data)?;
-        //    VarInt(buf.len() as i32).write_to(w)?;
-        //    w.write_all(buf)?;
-        //} else {
-        //    let buf: &mut Vec<u8> = &mut Vec::new();
-        //    self.id.write_to(buf)?;
-        //    buf.write_all(&self.data)?;
-        //    let len = VarInt(buf.len() as i32);
-        //
-        //    let buf2 = &mut Vec::new();
-        //    len.write_to(buf2)?;
-        //    ZlibEncoder::new(buf.as_slice(), Compression::default()).read_to_end(buf2)?;
-        //
-        //    let len = VarInt(buf2.len() as i32);
-        //    len.write_to(w)?;
-        //    w.write_all(buf2)?;
-        //}
         Ok(())
     }
 

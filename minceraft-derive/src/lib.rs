@@ -46,7 +46,7 @@ pub fn derive_packet(input: TokenStream) -> TokenStream {
 		let ty = &f.ty;
 		let name = &f.ident;
 		quote_spanned! {f.span()=>
-			let #name = #ty::read_from(r)?;
+			let #name = <#ty>::read_from(r)?;
 		}
 	});
 	let stream_decoder_types = quote! {
