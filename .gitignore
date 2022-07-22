@@ -1,7 +1,8 @@
 Cargo.lock
 /target
 auth.cache
-server.bat
+server.sh
 /server
 /generated
 /.vscode
+.env
