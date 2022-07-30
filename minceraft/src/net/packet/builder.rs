@@ -6,13 +6,13 @@ macro_rules! user_type {
     (VarInt) => {
         i32
     };
-    (VarIntPrefixedVec <$inner:ident>) => {
+    (VarIntPrefixedArray <$inner:ident>) => {
         Vec<$inner>
     };
-    (ShortPrefixedVec <$inner:ident>) => {
+    (ShortPrefixedArray <$inner:ident>) => {
         Vec<$inner>
     };
-    (LengthInferredVecU8) => {
+    (LengthInferredByteArray) => {
         Vec<u8>
     };
     (Angle) => {
@@ -25,6 +25,18 @@ macro_rules! user_type {
 
 #[macro_export]
 macro_rules! user_type_convert_to_writeable {
+    (VarInt, $e:expr) => {
+        VarInt(*$e as i32)
+    };
+    (VarIntPrefixedArray <$inner:ident>, $e:expr) => {
+        VarIntPrefixedArray::from($e.as_slice())
+    };
+    (ShortPrefixedArray <$inner:ident>, $e:expr) => {
+        ShortPrefixedArray::from($e.as_slice())
+    };
+    (LengthInferredByteArray, $e:expr) => {
+        LengthInferredByteArray::from($e.as_slice())
+    };
     (Angle, $e:expr) => {
         Angle(*$e)
     };

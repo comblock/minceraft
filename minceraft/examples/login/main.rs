@@ -1,10 +1,8 @@
 mod packets;
 use minceraft::auth;
 use minceraft::net;
-use minceraft::net::types::ByteArray;
 use net::conn::Conn;
 use net::packet::Packet;
-use net::types::VarInt;
 use rand::Rng;
 use serde_json::json;
 use sha1::Digest;
@@ -30,7 +28,7 @@ fn main() {
     let mut conn = Conn::connect_timeout(&addr, Duration::new(30, 0)).unwrap();
 
     let packet = packets::Handshake {
-        protocol_version: VarInt(47),
+        protocol_version: 47,
         server_address: String::from("mc.hypixel.net"),
         server_port: 25565,
         next_state: packets::HandshakeState::Login,
@@ -52,15 +50,15 @@ fn main() {
                 let shared = rand::thread_rng().gen::<[u8; 16]>();
 
                 let shared_e =
-                    rsa_public_encrypt_pkcs1::encrypt(&packet.public_key.0, &shared).unwrap();
+                    rsa_public_encrypt_pkcs1::encrypt(&packet.public_key, &shared).unwrap();
                 let token_e =
-                    rsa_public_encrypt_pkcs1::encrypt(&packet.public_key.0, &packet.verify_token.0)
+                    rsa_public_encrypt_pkcs1::encrypt(&packet.public_key, &packet.verify_token)
                         .unwrap();
 
                 let mut hasher = sha1::Sha1::new();
                 hasher.update(&packet.server_id.as_bytes());
                 hasher.update(&shared);
-                hasher.update(packet.public_key.0);
+                hasher.update(packet.public_key);
                 let mut hash = hasher.finalize();
 
                 let negative = (hash[0] & 0x80) == 0x80;
@@ -101,8 +99,8 @@ fn main() {
                     .unwrap();
 
                 conn.send_packet(&packets::EncryptionResponse {
-                    shared_secret: ByteArray(shared_e),
-                    verify_token: ByteArray(token_e),
+                    shared_secret: shared_e,
+                    verify_token: token_e,
                 })
                 .unwrap();
 
@@ -115,7 +113,7 @@ fn main() {
             }
             packets::SetCompression::ID => {
                 let packet = packets::SetCompression::decode(packet).unwrap();
-                conn.set_compression_threshhold(packet.threshold.0)
+                conn.set_compression_threshhold(packet.threshold)
             }
             _ => {
                 println!("Received packet: {:?}", packet.id);

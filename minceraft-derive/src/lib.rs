@@ -1,4 +1,5 @@
 // very much WIP
+// minceraft-derive is unused for now as a packet builder macro is easier to use
 extern crate proc_macro;
 use proc_macro::TokenStream;
 use quote::{quote, quote_spanned};

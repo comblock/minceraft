@@ -1,4 +1,4 @@
-use minceraft::{*, net::types::{VarInt, ByteArray}};
+use minceraft::*;
 
 def_enum! {
     HandshakeState (VarInt) {
@@ -7,57 +7,38 @@ def_enum! {
     }
 }
 
-#[derive(Packet)]
-#[id(0x00)]
-pub struct Handshake {
-    pub protocol_version: VarInt,
-    pub server_address: String,
-    pub server_port: u16,
-    pub next_state: HandshakeState,
-}
+packets! {
+    Handshake(0x00) {
+        protocol_version VarInt;
+        server_address String;
+        server_port u16;
+        next_state HandshakeState;
+    },
+    Disconnect(0x00) {
+        reason String;
+    },
+    EncryptionRequest(0x01) {
+        server_id String;
+        public_key VarIntPrefixedArray<u8>;
+        verify_token VarIntPrefixedArray<u8>;
+    },
+    LoginSuccess(0x02) {
+        uuid String;
+        username String;
+    }
 
-#[derive(Packet)]
-#[id(0x00)]
-pub struct Disconnect {
-    pub reason: String
-}
+    SetCompression(0x03) {
+        threshold VarInt;
+    }
+    LoginStart(0x00) {
+        name String;
+    },
+    EncryptionResponse(0x01) {
+        shared_secret VarIntPrefixedArray<u8>;
+        verify_token VarIntPrefixedArray<u8>;
+    },
 
-#[derive(Packet)]
-#[id(0x01)]
-pub struct EncryptionRequest {
-    pub server_id: String,
-    pub public_key: ByteArray,
-    pub verify_token: ByteArray,
-}
-
-#[derive(Packet)]
-#[id(0x02)]
-pub struct LoginSuccess {
-    pub uuid: String,
-    pub username: String,
-}
-
-#[derive(Packet)]
-#[id(0x03)]
-pub struct SetCompression {
-    pub threshold: VarInt
-}
-
-#[derive(Packet)]
-#[id(0x00)]
-pub struct LoginStart {
-    pub name: String
-}
-
-#[derive(Packet)]
-#[id(0x01)]
-pub struct EncryptionResponse {
-    pub shared_secret: ByteArray,
-    pub verify_token: ByteArray,
-}
-
-#[derive(Packet)]
-#[id(0x00)]
-pub struct KeepAlive {
-    pub keep_alive: VarInt,
+    KeepAlive(0x00) {
+        keep_alive VarInt;
+    },
 }

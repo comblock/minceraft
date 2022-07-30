@@ -1,41 +1,29 @@
-// To anyone reading this: DON'T!
-// It's way too cursed!
-// YOU HAVE BEEN WARNED!
 use case::CaseExt;
 use reqwest::blocking as reqwest;
+use std::env;
 use std::fs::File;
 use std::io::Write;
 use std::str::FromStr;
 
-fn create_dir(name: &str) -> anyhow::Result<(), std::io::Error> {
-    if let Err(e) = std::fs::create_dir(name) {
-        if let std::io::ErrorKind::AlreadyExists = e.kind() {
-            Ok(())
-        } else {
-            Err(e)
-        }
-    } else {
-        Ok(())
-    }
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    generate_inv("1.8")?;
+    Ok(())
 }
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let args: Vec<String> = std::env::args().collect();
-    let version = &args[1];
+fn generate_inv(version: &str) -> anyhow::Result<()> {
     let data_path: serde_json::Value = reqwest::get(
         "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/master/data/dataPaths.json",
     )?
     .json()?;
+    let out_dir = env::var("OUT_DIR")?;
 
-    create_dir("generated")?;
-    create_dir("generated/inv")?;
 
-    let mut f = File::create("generated/inv/mod.rs")?;
-    f.write(b"mod enchant;\nmod item;\npub type Slot = crate::inv::Slot<item::Item, enchant::Enchant>;\n")?;
+
+    let mut enchant = Vec::<u8>::new();
+    let mut item = Vec::<u8>::new();
 
     {
-        let mut f = File::create("generated/inv/enchant.rs")?;
-        f.write_all(b"// This file was generated and is not intended for manual editing\nuse crate::inv::enchant::EnchantCost;\n\n")?;
+        enchant.write_all(b"// This file was generated and is not intended for manual editing\nuse crate::inv::enchant::EnchantCost;\n\n")?;
 
         let enchant_path = data_path["pc"][version]["enchantments"].as_str().unwrap();
 
@@ -184,21 +172,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
 
         for i in 0..3 {
-            f.write_all(&bufs[i])?;
+            enchant.write_all(&bufs[i])?;
         }
-        f.write_all(b"}\n\n")?;
+        enchant.write_all(b"}\n\n")?;
 
         for i in 3..=buf_amount {
-            f.write_all(&bufs[i])?;
+            enchant.write_all(&bufs[i])?;
         }
-        f.write_all(b"}\n\n")?;
-        f.flush()?;
+        enchant.write_all(b"}\n\n")?;
+        enchant.flush()?;
     }
 
     {
-        let mut f = std::fs::File::create("generated/inv/item.rs")?;
+       
 
-        f.write_all(b"// This file was generated and is not intended for manual editing\nuse anyhow::{anyhow, Result};\n\n#[derive(Debug, Copy, Clone)]\npub enum Item {\n")?;
+        item.write_all(b"// This file was generated and is not intended for manual editing\nuse anyhow::{anyhow, Result};\n\n#[derive(Debug, Copy, Clone)]\npub enum Item {\n")?;
 
         let item_path = data_path["pc"][version]["items"].as_str().unwrap();
         let resp = reqwest::get(format!("https://raw.githubusercontent.com/PrismarineJS/minecraft-data/master/data/{item_path}/items.json"))?;
@@ -227,7 +215,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let display_name = &i["displayName"];
             let stack_size = &i["stackSize"];
             let max_durability = &i["maxDurability"];
-            f.write_all(format!("    {},\n", name_camel).as_bytes())?;
+            item.write_all(format!("    {},\n", name_camel).as_bytes())?;
             buf.write_all(format!("            Self::{} => {},\n", name_camel, id).as_bytes())?;
             buf2.write_all(
                 format!("            {} => Ok(Self::{}),\n", id, name_camel).as_bytes(),
@@ -257,7 +245,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
 
-        f.write_all(b"}\n\n")?;
+        item.write_all(b"}\n\n")?;
         buf.write_all(b"        }\n    }\n\n")?;
         buf2.write_all(
             b"            _ => Err(anyhow!(\"invalid item id\")),\n        }\n    }\n\n",
@@ -269,14 +257,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         buf5.write_all(b"        }\n    }\n\n")?;
         buf6.write_all(b"        }\n    }\n\n")?;
         buf7.write_all(b"        }\n    }\n}\n")?;
-        f.write_all(&buf)?;
-        f.write_all(&buf2)?;
-        f.write_all(&buf3)?;
-        f.write_all(&buf4)?;
-        f.write_all(&buf5)?;
-        f.write_all(&buf6)?;
-        f.write_all(&buf7)?;
-        f.flush()?;
+        item.write_all(&buf)?;
+        item.write_all(&buf2)?;
+        item.write_all(&buf3)?;
+        item.write_all(&buf4)?;
+        item.write_all(&buf5)?;
+        item.write_all(&buf6)?;
+        item.write_all(&buf7)?;
+        item.flush()?;
     }
+    let enchant = String::from_utf8(enchant)?;
+    let item = String::from_utf8(item)?;
+
+
+    let mut f = File::create(format!("{out_dir}/inv.rs"))?;
+    f.write(format!("mod enchant {{\n{enchant}}}\nmod item{{\n{item}}}\npub type Slot = crate::inv::Slot<item::Item, enchant::Enchant>;\n").as_bytes())?;
+
     Ok(())
 }

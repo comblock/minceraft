@@ -1,4 +1,4 @@
-use minceraft::{*, net::types::VarInt};
+use minceraft::*;
 
 def_enum! {
     HandshakeState (VarInt) {
@@ -7,33 +7,21 @@ def_enum! {
     }
 }
 
-#[derive(Packet)]
-#[id(0x00)]
-pub struct Handshake {
-    pub protocol_version: VarInt,
-    pub server_address: String,
-    pub server_port: u16,
-    pub next_state: HandshakeState,
-}
-
-#[derive(Packet)]
-#[id(0x00)]
-pub struct Request {}
-
-#[derive(Packet)]
-#[id(0x00)]
-pub struct Response {
-    pub json_response: String,
-}
-
-#[derive(Packet)]
-#[id(0x01)]
-pub struct Ping {
-    pub payload: i64
-}
-
-#[derive(Packet)]
-#[id(0x01)]
-pub struct Pong {
-    pub payload: i64
+packets! {
+    Handshake(0x00) {
+        protocol_version VarInt;
+        server_address String;
+        server_port u16;
+        next_state HandshakeState;
+    },
+    Request(0x00) {},
+    Response(0x00) {
+        json_response String;
+    },
+    Ping(0x01) {
+        payload i64;
+    },
+    Pong(0x01) {
+        payload i64;
+    },
 }

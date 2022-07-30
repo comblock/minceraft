@@ -6,7 +6,3 @@ pub mod inv;
 pub mod net;
 #[cfg(feature = "p47")]
 mod p47;
-
-#[cfg(feature = "derive")]
-#[cfg(feature = "net")]
-pub use minceraft_derive::Packet;
