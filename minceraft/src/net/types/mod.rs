@@ -270,6 +270,7 @@ impl Decoder for Uuid {
     }
 }
 
+#[derive(Debug, Clone)]
 pub struct Position {
     x: i32,
     y: i32,
