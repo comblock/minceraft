@@ -271,7 +271,7 @@ fn generate_inv(version: &str) -> anyhow::Result<()> {
 
 
     let mut f = File::create(format!("{out_dir}/inv.rs"))?;
-    f.write(format!("mod enchant {{\n{enchant}}}\nmod item{{\n{item}}}\npub type Slot = crate::inv::Slot<item::Item, enchant::Enchant>;\n").as_bytes())?;
+    f.write(format!("pub mod enchant {{\n{enchant}}}\npub mod item{{\n{item}}}\npub type Slot = crate::inv::Slot<item::Item, enchant::Enchant>;\n").as_bytes())?;
 
     Ok(())
 }
