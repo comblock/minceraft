@@ -1,31 +1,7 @@
-use crate::{def_enum, packets};
-use super::super::super::inv::Slot;
-
-def_enum! {
-    Dimension(i8) {
-        -1 = Nether,
-        0 = Overworld,
-        1 = End
-    }
-}
-
-def_enum! {
-    ChatPosition(i8) {
-        0 = ChatBox,
-        1 = SystemMessage,
-        2 = Hotbar,
-    }
-}
-
-def_enum! {
-    EquipmentSlot(i16) {
-        0i16 = Held,
-        1i16 = Boots,
-        2i16 = Leggings,
-        3i16 = Chestplate,
-        4i16 = Helmet,
-    }
-}
+use crate::p47::enums::*;
+use crate::p47::inv::Slot;
+use crate::p47::metadata::EntityMetaData;
+use crate::packets;
 
 packets! {
     KeepAlive(0x00) {
@@ -52,5 +28,49 @@ packets! {
         entity_id VarInt;
         slot EquipmentSlot;
         item Slot;
+    }
+    SpawnPosition(0x05) {
+        position Position;
+    }
+    UpdateHealth(0x06) {
+        health f32; // <= 0 = dead, 20 = full HP
+        food VarInt; // 0-20
+        food_saturation f32; // 0.0-5.0 in integer increments
+    }
+    Respawn(0x07) {
+        dimension Dimension;
+        difficulty Difficulty;
+        gamemode Gamemode;
+        level_type String;
+    }
+    PlayerPositionAndLook(0x08) {
+        x f64;
+        y f64;
+        z f64;
+        yaw f32;
+        pitch f32;
+        flags i8; // Bit field
+    }
+    HeldItemChange(0x09) {
+        slot i8; // 0-8
+    }
+    UseBed(0x0A) {
+        entity_id VarInt;
+        location Position;
+    }
+    Animation(0x0B) {
+        entity_id VarInt;
+        animation AnimationId;
+    }
+    SpawnPlayer(0x0C) {
+        entity_id VarInt;
+        player_uuid Uuid;
+        x i32;
+        y i32;
+        z i32;
+        yaw Angle;
+        pitch Angle;
+        current_item i16; // 0 for no item instead of -1
+        metadata EntityMetaData;
     }
 }

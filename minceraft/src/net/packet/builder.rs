@@ -54,6 +54,7 @@ macro_rules! packets {
         )*
     ) => {
         $(
+            // Maybe reconsider these use clauses and remove them?
             #[allow(unused_imports)]
             use $crate::net::types::*;
             #[allow(unused_imports)]
@@ -132,6 +133,7 @@ macro_rules! def_enum {
             ),* $(,)?
         }
     ) => {
+        // Maybe reconsider these use clauses and remove them?
         #[allow(unused_imports)]
         use $crate::net::types::*;
         #[allow(unused_imports)]

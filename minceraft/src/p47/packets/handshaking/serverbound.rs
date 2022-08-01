@@ -1,11 +1,5 @@
-use crate::*;
-
-def_enum! {
-    HandshakeState (VarInt) {
-        1 = Status,
-        2 = Login,
-    }
-}
+use crate::p47::enums::HandshakeState;
+use crate::packets;
 
 packets!(
     Handshake(0x00) {

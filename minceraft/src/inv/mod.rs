@@ -2,7 +2,7 @@ pub mod enchant;
 pub mod item;
 
 #[derive(Debug, Clone, Copy)]
-pub enum Slot<T: item::Item, U: enchant::Enchant> {
+pub enum Slot<I: item::Item, E: enchant::Enchant> {
     Empty,
-    Filled(item::Itemstack<T, U>),
+    Filled(item::Itemstack<I, E>),
 }

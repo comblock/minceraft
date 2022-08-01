@@ -1,23 +1,29 @@
+#[cfg(feature = "p47")]
 use case::CaseExt;
+#[cfg(feature = "p47")]
 use reqwest::blocking as reqwest;
+#[cfg(feature = "p47")]
 use std::env;
+#[cfg(feature = "p47")]
 use std::fs::File;
+#[cfg(feature = "p47")]
 use std::io::Write;
+#[cfg(feature = "p47")]
 use std::str::FromStr;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    #[cfg(feature = "p47")]
     generate_inv("1.8")?;
     Ok(())
 }
 
+#[cfg(feature = "p47")]
 fn generate_inv(version: &str) -> anyhow::Result<()> {
     let data_path: serde_json::Value = reqwest::get(
         "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/master/data/dataPaths.json",
     )?
     .json()?;
     let out_dir = env::var("OUT_DIR")?;
-
-
 
     let mut enchant = Vec::<u8>::new();
     let mut item = Vec::<u8>::new();
@@ -184,8 +190,6 @@ fn generate_inv(version: &str) -> anyhow::Result<()> {
     }
 
     {
-       
-
         item.write_all(b"// This file was generated and is not intended for manual editing\nuse anyhow::{anyhow, Result};\n\n#[derive(Debug, Copy, Clone)]\npub enum Item {\n")?;
 
         let item_path = data_path["pc"][version]["items"].as_str().unwrap();
@@ -268,7 +272,6 @@ fn generate_inv(version: &str) -> anyhow::Result<()> {
     }
     let enchant = String::from_utf8(enchant)?;
     let item = String::from_utf8(item)?;
-
 
     let mut f = File::create(format!("{out_dir}/inv.rs"))?;
     f.write(format!("pub mod enchant {{\n{enchant}}}\npub mod item{{\n{item}}}\npub type Slot = crate::inv::Slot<item::Item, enchant::Enchant>;\n").as_bytes())?;
