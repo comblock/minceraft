@@ -37,9 +37,6 @@ macro_rules! user_type_convert_to_writeable {
     (LengthInferredByteArray, $e:expr) => {
         LengthInferredByteArray::from($e.as_slice())
     };
-    (Angle, $e:expr) => {
-        Angle(*$e)
-    };
     ($typ:ty, $e:expr) => {
         $e
     };
@@ -135,6 +132,12 @@ macro_rules! def_enum {
             ),* $(,)?
         }
     ) => {
+        #[allow(unused_imports)]
+        use $crate::net::types::*;
+        #[allow(unused_imports)]
+        use $crate::net::packet::*;
+        #[allow(unused_imports)]
+        use $crate::*;
         #[derive(Debug, Clone)]
         pub enum $ident {
             $(
@@ -154,6 +157,7 @@ macro_rules! def_enum {
                 where
                     Self: Sized
             {
+                #[allow(unused_imports)]
                 use anyhow::Context as _;
                 let discriminant = <$discriminant_type>::read_from(buffer)
                     .context(concat!("failed to read discriminant for enum type ", stringify!($ident)))?;
