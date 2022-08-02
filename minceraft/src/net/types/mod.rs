@@ -304,7 +304,7 @@ impl<'a, T, U> Array<'a, T, U>
 where
     [T]: ToOwned<Owned = Vec<T>>,
 {
-    const MAX_LENGTH: usize = 2 ^ 20;
+    const MAX_LENGTH: usize = 1024 * 1024;
 }
 
 impl<'a, T, U> Encoder for Array<'a, T, U>
@@ -338,7 +338,7 @@ where
         }
 
         let mut vec = Vec::<T>::new();
-        for _ in 0..=len {
+        for _ in 0..len {
             vec.push(T::read_from(r)?);
         }
         Ok(Self(Cow::Owned(vec), PhantomData))
