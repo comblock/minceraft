@@ -15,8 +15,8 @@ async fn main() {
         server_port: port,
         next_state: packets::HandshakeState::Status,
     };
-    conn.send_packet(&packet).await.unwrap();
-    conn.send_packet(&packets::Request {}).await.unwrap();
+    conn.send_packet(packet).await.unwrap();
+    conn.send_packet(packets::Request {}).await.unwrap();
     let packet = packets::Response::decode(conn.read_packet().await.unwrap()).unwrap();
     println!("{}", packet.json_response);
 
@@ -24,7 +24,7 @@ async fn main() {
     let timestamp = time.timestamp_millis();
 
     let packet = packets::Ping { payload: timestamp };
-    conn.send_packet(&packet).await.unwrap();
+    conn.send_packet(packet).await.unwrap();
 
     let resp = conn.read_packet().await.unwrap();
     let ping = chrono::Utc::now()

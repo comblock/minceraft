@@ -34,8 +34,8 @@ async fn main() {
         server_port: 25565,
         next_state: packets::HandshakeState::Login,
     };
-    conn.send_packet(&packet).await.unwrap();
-    conn.send_packet(&packets::LoginStart { name: auth.name })
+    conn.send_packet(packet).await.unwrap();
+    conn.send_packet(packets::LoginStart { name: auth.name })
         .await.unwrap();
 
     loop {
@@ -99,7 +99,7 @@ async fn main() {
                     .bytes()
                     .unwrap();
 
-                conn.send_packet(&packets::EncryptionResponse {
+                conn.send_packet(packets::EncryptionResponse {
                     shared_secret: shared_e,
                     verify_token: token_e,
                 })
@@ -126,7 +126,7 @@ async fn main() {
         let packet = conn.read_packet().await.unwrap();
         if packet.id == packets::KeepAlive::ID {
             let packet = packets::KeepAlive::decode(packet).unwrap();
-            conn.send_packet(&packets::KeepAlive {
+            conn.send_packet(packets::KeepAlive {
                 keep_alive: packet.keep_alive,
             })
             .await.unwrap();

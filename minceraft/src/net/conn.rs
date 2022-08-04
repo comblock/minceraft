@@ -32,7 +32,8 @@ pub struct Conn {
     cipher: Option<Cipher>,
     writer: BufWriter<OwnedWriteHalf>,
     reader: BufReader<OwnedReadHalf>,
-    pub threshhold: i32,
+    /// `threshold` is initially set to -1 but after that you need to handle it manually
+    pub threshold: i32,
 }
 
 struct Cipher {
@@ -131,7 +132,7 @@ impl TryFrom<TcpStream> for Conn {
             cipher: None,
             writer,
             reader,
-            threshhold: -1,
+            threshold: -1,
         })
     }
 }
@@ -146,6 +147,7 @@ impl TryInto<TcpStream> for Conn {
 }
 
 impl Conn {
+    /// Connects to a server.
     pub async fn connect<A: ToSocketAddrs>(addr: A) -> anyhow::Result<Conn> {
         let stream = TcpStream::connect(addr).await?;
         let peer = stream.peer_addr()?;
@@ -155,7 +157,7 @@ impl Conn {
             cipher: None,
             writer,
             reader,
-            threshhold: -1,
+            threshold: -1,
         })
     }
 
@@ -177,23 +179,32 @@ impl Conn {
         Ok(())
     }
 
-    pub async fn send_packet<T: Packet + Send + Sync + 'static>(&mut self, packet: &T) -> anyhow::Result<()> {
-        //SAFETY: Since I know the spawn_blocking is awaited in this function this should be fine
-        let packet = unsafe {std::mem::transmute::<&T, &'static T>(&packet)};
-        let encoded = spawn_blocking(|| -> Result<RawPacket> {
+    /// Sends a packet.
+    /// Note that this function takes ownership of `packet`.
+    /// Use send_raw_packet if you need to reuse the packet.
+    pub async fn send_packet<T: Packet + Send + Sync + 'static>(&mut self, packet: T) -> anyhow::Result<()> {        
+        let encoded = spawn_blocking(move || -> Result<RawPacket> {
                 packet.encode()
             }).await??;
-        encoded.pack(self, self.threshhold).await?;
+
+        encoded.pack(self, self.threshold).await?;
+        self.flush().await?;
+        Ok(())
+    }
+
+    /// Sends a raw packet. This is useful when sending the same packet to multiple clients.
+    pub async fn send_raw_packet(&mut self, packet: RawPacket) -> anyhow::Result<()> {
+        packet.pack(self, self.threshold).await?;
         self.flush().await?;
         Ok(())
     }
 
     pub async fn read_packet(&mut self) -> Result<RawPacket> {
-        RawPacket::unpack(self, self.threshhold).await
+        RawPacket::unpack(self, self.threshold).await
     }
 
     pub fn set_compression_threshhold(&mut self, threshhold: i32) {
-        self.threshhold = threshhold;
+        self.threshold = threshhold;
     }
 
     pub fn enable_encryption(&mut self, key: &[u8]) -> anyhow::Result<()> {

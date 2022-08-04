@@ -178,21 +178,19 @@ impl RawPacket {
     }
 
     pub async fn pack<T: AsyncWrite + Unpin>(
-        &self,
+        self,
         w: &mut T,
         threshold: i32,
     ) -> Result<()> {
-        //SAFETY: Since I know the lifetime doesn't *have* to be 'static (but spawn_blocking requires it to be) this should be fine
-        let packet = unsafe {std::mem::transmute::<&Self, &'static Self>(&self)};
         if threshold >= 0 {
-            packet.pack_with_compression(w, threshold).await
+            self.pack_with_compression(w, threshold).await
         } else {
-            packet.pack_without_compression(w).await
+            self.pack_without_compression(w).await
         }
     }
 
     async fn pack_with_compression<T: AsyncWrite + Unpin>(
-        &'static self,
+        self,
         w: &mut T,
         threshold: i32,
     ) -> Result<()> {
@@ -228,7 +226,7 @@ impl RawPacket {
     }
 
     async fn pack_without_compression<T: AsyncWrite + Unpin>(
-        &'static self,
+        self,
         w: &mut T,
     ) -> Result<()> {
         let wb = spawn_blocking(move || -> Result<Vec<u8>> {
