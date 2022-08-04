@@ -6,9 +6,10 @@ use net::packet::Packet;
 use rand::Rng;
 use serde_json::json;
 use sha1::Digest;
-use std::{net::ToSocketAddrs, time::Duration};
+use std::net::ToSocketAddrs;
 
-fn main() {
+#[tokio::main]
+async fn main() {
     let http = reqwest::blocking::Client::new();
 
     let dc = auth::DeviceCode::new("389b1b32-b5d5-43b2-bddc-84ce938d6737", None, &http).unwrap();
@@ -25,7 +26,7 @@ fn main() {
         .next()
         .unwrap();
 
-    let mut conn = Conn::connect_timeout(&addr, Duration::new(30, 0)).unwrap();
+    let mut conn = Conn::connect(&addr).await.unwrap();
 
     let packet = packets::Handshake {
         protocol_version: 47,
@@ -33,12 +34,12 @@ fn main() {
         server_port: 25565,
         next_state: packets::HandshakeState::Login,
     };
-    conn.send_packet(&packet).unwrap();
+    conn.send_packet(&packet).await.unwrap();
     conn.send_packet(&packets::LoginStart { name: auth.name })
-        .unwrap();
+        .await.unwrap();
 
     loop {
-        let packet = conn.read_packet().unwrap();
+        let packet = conn.read_packet().await.unwrap();
         match packet.id {
             packets::Disconnect::ID => {
                 let packet = packets::Disconnect::decode(packet).unwrap();
@@ -102,7 +103,7 @@ fn main() {
                     shared_secret: shared_e,
                     verify_token: token_e,
                 })
-                .unwrap();
+                .await.unwrap();
 
                 conn.enable_encryption(&shared).unwrap();
             }
@@ -122,13 +123,13 @@ fn main() {
     }
     loop {
         // Keeps the connection alive
-        let packet = conn.read_packet().unwrap();
+        let packet = conn.read_packet().await.unwrap();
         if packet.id == packets::KeepAlive::ID {
             let packet = packets::KeepAlive::decode(packet).unwrap();
             conn.send_packet(&packets::KeepAlive {
                 keep_alive: packet.keep_alive,
             })
-            .unwrap();
+            .await.unwrap();
         }
     }
 }

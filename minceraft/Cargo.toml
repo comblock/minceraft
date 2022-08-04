@@ -8,20 +8,22 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [features]
-net = ["dep:aes", "dep:byteorder", "dep:cfb8", "dep:flate2", "dep:hematite-nbt", "dep:uuid", "inv"]
+net = ["dep:aes", "dep:byteorder", "dep:cfb8", "dep:flate2", "dep:hematite-nbt", "dep:uuid","dep:tokio", "dep:bytes", "inv"]
 auth = ["dep:byteorder", "dep:chrono", "dep:reqwest", "dep:serde_json", "dep:serde", "dep:serde_derive", "dep:base64"]
 inv = []
 p47 = ["net"]
 
 [dependencies]
 anyhow = "1.0"
-
+tokio = { version = "1.20", optional = true, features = ["full"]}
+bytes = { version = "1.2", optional = true}
+futures = { version = "0.3", optional = true }
 aes = { version = "0.7", optional = true }
 byteorder = { version = "1.4", optional = true }
 cfb8 = { version = "0.7", optional = true }
 flate2 = { version = "1.0", optional = true }
 hematite-nbt = { version = "0.5", optional = true }
-uuid = { version = "1.0", optional = true }
+uuid = { version = "1.1", optional = true }
 chrono = { version = "0.4", optional = true}
 reqwest = { version = "0.11", features = ["blocking", "json"], optional = true }
 serde_json = { version = "1.0", optional = true }
@@ -46,13 +48,8 @@ case = "1.0"
 
 [[example]]
 name = "login"
-required-features = ["net", "auth", "derive"]
+required-features = ["net", "auth"]
 
 [[example]]
 name = "status"
-required-features = ["net", "derive"]
-
-[[bin]]
-name = "gen-inv"
-path = "src/bin/gen/inv.rs"
-required-features = ["gen"]
+required-features = ["net"]

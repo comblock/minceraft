@@ -15,7 +15,7 @@ use std::{
 };
 pub use uuid::Uuid;
 
-pub trait Encoder: Sized {
+pub trait Encoder {
     fn write_to(&self, w: &mut impl io::Write) -> Result<()>;
 }
 

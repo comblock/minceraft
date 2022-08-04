@@ -200,8 +200,7 @@ packets! {
 #[derive(Debug, Clone)]
 pub struct SpawnObjectInner {
     pub data: i32,
-    pub velocity: Option<SpawnObjectVelocity>
-
+    pub velocity: Option<SpawnObjectVelocity>,
 }
 
 impl Encoder for SpawnObjectInner {
@@ -221,17 +220,12 @@ impl Decoder for SpawnObjectInner {
             Some(SpawnObjectVelocity {
                 x: i16::read_from(r)?,
                 y: i16::read_from(r)?,
-                z: i16::read_from(r)?
+                z: i16::read_from(r)?,
             })
         } else {
             None
         };
-        Ok(
-            Self {
-                data,
-                velocity
-            }
-        )
+        Ok(Self { data, velocity })
     }
 }
 
@@ -240,7 +234,7 @@ impl Decoder for SpawnObjectInner {
 pub struct SpawnObjectVelocity {
     pub x: i16,
     pub y: i16,
-    pub z: i16, 
+    pub z: i16,
 }
 
 impl Encoder for SpawnObjectVelocity {
