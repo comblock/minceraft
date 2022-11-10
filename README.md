@@ -1,6 +1,9 @@
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/comblock/minceraft?style=for-the-badge)
 ![GitHub last commit](https://img.shields.io/github/last-commit/comblock/minceraft?style=for-the-badge)
 
+# ⚠ ATTENTION ⚠️
+While `minceraft` isn't *cancelled*, I have suspended development to work on https://github.com/mine-rs/. When `miners` and `craftrs` are mostly finished, this repo/crate will likely be repurposed as a high level framework or implementation of sorts.
+
 # minceraft
 Minceraft is a library for minecraft related stuff.
 Currently it is divided into 2 modules that have to be enabled as a feature:
